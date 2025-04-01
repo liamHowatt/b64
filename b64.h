@@ -29,8 +29,8 @@
  * if dst is not NULL, then it must point to an array that has the size of at
  * least ((srclen + 2) / 3 * 4)
  */
-char *b64Encode(char *dst, char *src, size_t srclen) {
-  static const char b64e[] = {
+uint8_t *b64Encode(uint8_t *dst, uint8_t *src, size_t srclen) {
+  static const uint8_t b64e[] = {
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -38,7 +38,7 @@ char *b64Encode(char *dst, char *src, size_t srclen) {
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
   size_t i;
-  char *p;
+  uint8_t *p;
   size_t inlen = srclen;
   size_t outlen = B64_LEN(inlen);
 
@@ -49,7 +49,6 @@ char *b64Encode(char *dst, char *src, size_t srclen) {
       return NULL;
     }
   }
-  dst[outlen] = '\0';
   p = dst;
 
   for (i = 0; i < inlen - 2; i += 3) {
@@ -84,8 +83,8 @@ char *b64Encode(char *dst, char *src, size_t srclen) {
  * if dst is not NULL, then it must point to an array that has the size of at
  * least (srclen / 4 * 3)
  */
-char *b64Decode(char *dst, char *src, char srclen) {
-  static const char b64d[] = {
+uint8_t *b64Decode(uint8_t *dst, uint8_t *src, uint32_t srclen) {
+  static const uint8_t b64d[] = {
       64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
       64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
       64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63, 52, 53, 54, 55, 56, 57,
@@ -118,7 +117,6 @@ char *b64Decode(char *dst, char *src, char srclen) {
     if (!dst)
       return NULL;
   }
-  dst[outlen] = '\0';
 
   for (i = 0, j = 0; i < inlen;) {
     unsigned int a = src[i] == '=' ? 0 & i++ : b64d[(src[i++])];
